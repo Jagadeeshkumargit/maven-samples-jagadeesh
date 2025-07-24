@@ -14,11 +14,14 @@
   <properties>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <modules>
     <module>server</module>
     <module>webapp</module>
+    <!-- add others here if needed, e.g. single-module-project -->
   </modules>
 
   <distributionManagement>
@@ -31,58 +34,46 @@
 
   <build>
     <plugins>
-     <plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-compiler-plugin</artifactId>
-  <version>3.8.1</version> <!-- You can also use 3.11.0 -->
-  <configuration>
-    <source>1.8</source> <!-- Or 17 if your JDK is 17 -->
-    <target>1.8</target>
-  </configuration>
-</plugin>
+
+      <!-- Compiler -->
       <plugin>
-        <artifactId>maven-release-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
         <configuration>
-          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
 
+      <!-- Enforce Maven version instead of <prerequisites> -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.4.1</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.6.0,)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Site plugin WITHOUT reportPlugins in configuration -->
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <reportPlugins>
-            <plugin>
-              <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-              <artifactId>maven-jxr-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-              <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-              <artifactId>maven-pmd-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-              <artifactId>maven-surefire-report-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>findbugs-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>taglist-maven-plugin</artifactId>
-            </plugin>
-          </reportPlugins>
-        </configuration>
+        <version>3.12.1</version>
       </plugin>
+
     </plugins>
 
     <pluginManagement>
@@ -94,7 +85,7 @@
 
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.2</version>
+          <version>3.8.1</version> <!-- upgraded -->
         </plugin>
 
         <plugin>
@@ -109,7 +100,7 @@
 
         <plugin>
           <artifactId>maven-pmd-plugin</artifactId>
-          <version>2.6</version>
+          <version>3.27.0</version> <!-- upgraded -->
         </plugin>
 
         <plugin>
@@ -129,7 +120,7 @@
 
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.0</version>
+          <version>3.12.1</version> <!-- upgraded -->
         </plugin>
 
         <plugin>
@@ -163,6 +154,43 @@
     </pluginManagement>
   </build>
 
+  <!-- >>> Proper reporting section (what was wrongly inside maven-site-plugin) -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.8</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.27.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.11</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.3.3</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>2.4</version>
+      </plugin>
+    </plugins>
+  </reporting>
+  <!-- <<< Proper reporting section -->
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -170,34 +198,29 @@
         <artifactId>servlet-api</artifactId>
         <version>2.5</version>
       </dependency>
-
       <dependency>
         <groupId>javax.servlet.jsp</groupId>
         <artifactId>jsp-api</artifactId>
         <version>2.2</version>
       </dependency>
-
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit-dep</artifactId>
         <version>4.10</version>
         <scope>test</scope>
       </dependency>
-
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-core</artifactId>
         <version>1.2.1</version>
         <scope>test</scope>
       </dependency>
-
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-library</artifactId>
         <version>1.2.1</version>
         <scope>test</scope>
       </dependency>
-
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
@@ -214,6 +237,7 @@
     <url>http://github.com/gabrielf/maven-samples</url>
   </scm>
 
+  <!-- You can delete this once you rely on the Enforcer plugin -->
   <prerequisites>
     <maven>3.0.3</maven>
   </prerequisites>
