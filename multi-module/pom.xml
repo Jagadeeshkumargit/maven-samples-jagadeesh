@@ -1,47 +1,27 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>com.example.maven-samples</groupId>
     <artifactId>multi-module-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath> <!-- Corrected parent -->
   </parent>
 
   <artifactId>server</artifactId>
   <packaging>jar</packaging>
+
   <name>Server</name>
 
   <dependencies>
-    <!-- Your project dependencies go here -->
+    <!-- Your dependencies -->
   </dependencies>
 
-  <build>
-    <plugins>
-      <!-- Optional: Add PMD plugin execution during verify phase -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.27.0</version>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-              <goal>pmd</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <linkXref>false</linkXref>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
+  <!-- ✅ Move reporting plugins under <reporting> instead of <build> -->
   <reporting>
     <plugins>
       <plugin>
@@ -49,8 +29,15 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.27.0</version>
         <configuration>
-          <linkXref>false</linkXref>
+          <printFailingErrors>true</printFailingErrors>
+          <targetJdk>1.8</targetJdk>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.1.2</version>
       </plugin>
     </plugins>
   </reporting>
